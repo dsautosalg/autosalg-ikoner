@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Saksbilder</title>
+
+<!-- Ikoner -->
+<link rel="apple-touch-icon" sizes="180x180" href="https://dsautosalg.github.io/autosalg-ikoner/saksbilder-icon-180.png">
+<link rel="apple-touch-icon-precomposed" href="https://dsautosalg.github.io/autosalg-ikoner/saksbilder-icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="https://dsautosalg.github.io/autosalg-ikoner/saksbilder-icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="https://dsautosalg.github.io/autosalg-ikoner/saksbilder-icon-512.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://dsautosalg.github.io/autosalg-ikoner/saksbilder-favicon-32.png">
+
+<!-- PWA & Hjemskjerm -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Saksbilder">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#D23A31">
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #0c0c0d;
+  }
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+</style>
+</head>
+<body>
+  <!-- allow-attributtet er kritisk her - uten det blokkeres kamera/skjermlås
+       siden dette er en cross-origin iframe (github.io -> script.google.com) -->
+  <iframe
+    src="https://script.google.com/macros/s/AKfycbxvUgBnYP826P9kYIdBwvgM9uaHhZLZf1l4XNVhdMdLYYYBgb9pTv52kVXitjug3NDiYA/exec"
+    allow="camera; microphone; screen-wake-lock">
+  </iframe>
+</body>
+</html>
