@@ -33,10 +33,63 @@
     height: 100%;
     border: none;
   }
+
+  #splash {
+    position: fixed;
+    inset: 0;
+    background: #0c0c0d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: opacity 0.35s ease;
+  }
+  #splash.hide {
+    opacity: 0;
+    pointer-events: none;
+  }
+  #splash img {
+    width: 96px;
+    height: 96px;
+    border-radius: 22px;
+    animation: splashIn 0.6s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes splashIn {
+    0%   { transform: scale(0.4); opacity: 0; }
+    60%  { transform: scale(1.08); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
 </style>
 </head>
 <body>
-  <!-- Erstatt URL-en under med din publiserte Google Apps Script URL -->
-  <iframe src="https://script.google.com/macros/s/AKfycbw5e1Jr-fmlr9sYxX4IAK0xi2TAg24xF7MhzzLqQdmMV5EdAg4ZA9R5xQXXtxbKRbeH/exec"></iframe>
+  <div id="splash">
+    <img src="https://dsautosalg.github.io/autosalg-ikoner/karosseri-icon-512.png" alt="">
+  </div>
+
+  <!-- allow-attributtet er kritisk - uten det blokkeres kamera/skjermlås
+       siden dette er en cross-origin iframe (github.io -> script.google.com) -->
+  <iframe
+    id="appFrame"
+    src="https://script.google.com/macros/s/AKfycbw5e1Jr-fmlr9sYxX4IAK0xi2TAg24xF7MhzzLqQdmMV5EdAg4ZA9R5xQXXtxbKRbeH/exec"
+    allow="camera; microphone; screen-wake-lock">
+  </iframe>
+
+  <script>
+    var splash = document.getElementById('splash');
+    var frame = document.getElementById('appFrame');
+    var hidden = false;
+
+    function hideSplash() {
+      if (hidden) return;
+      hidden = true;
+      splash.classList.add('hide');
+    }
+
+    frame.addEventListener('load', function () {
+      setTimeout(hideSplash, 400);
+    });
+
+    setTimeout(hideSplash, 3000);
+  </script>
 </body>
 </html>
