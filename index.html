@@ -63,7 +63,7 @@
 </head>
 <body>
   <div id="splash">
-    <img src="https://dsautosalg.github.io/autosalg-ikoner/karosseri-icon-512.png" alt="">
+    <img id="splashLogo" src="https://dsautosalg.github.io/autosalg-ikoner/karosseri-icon-512.png" alt="">
   </div>
 
   <!-- allow-attributtet er kritisk - uten det blokkeres kamera/skjermlås
@@ -77,7 +77,11 @@
   <script>
     var splash = document.getElementById('splash');
     var frame = document.getElementById('appFrame');
+    var logo = document.getElementById('splashLogo');
     var hidden = false;
+    var imageReady = false;
+    var frameReady = false;
+    var minTimeElapsed = false;
 
     function hideSplash() {
       if (hidden) return;
@@ -85,10 +89,26 @@
       splash.classList.add('hide');
     }
 
-    frame.addEventListener('load', function () {
-      setTimeout(hideSplash, 400);
-    });
+    function maybeHide() {
+      if (imageReady && frameReady && minTimeElapsed) hideSplash();
+    }
 
+    // Bildet kan være ferdig lastet (fra cache) allerede før denne lytteren
+    // rekker å bli lagt til - sjekk .complete direkte i tillegg til load/error.
+    if (logo.complete && logo.naturalWidth > 0) {
+      imageReady = true;
+    } else {
+      logo.addEventListener('load', function () { imageReady = true; maybeHide(); });
+      logo.addEventListener('error', function () { imageReady = true; maybeHide(); }); // ikke heng fast hvis bildet skulle feile
+    }
+
+    frame.addEventListener('load', function () { frameReady = true; maybeHide(); });
+
+    // Minimum visningstid, så logoen garantert rekker å vises et øyeblikk
+    // selv om alt annet laster lynraskt.
+    setTimeout(function () { minTimeElapsed = true; maybeHide(); }, 600);
+
+    // Sikkerhetsnett: skjul splashen uansett etter 3 sekunder.
     setTimeout(hideSplash, 3000);
   </script>
 </body>
