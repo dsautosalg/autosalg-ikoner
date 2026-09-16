@@ -5,17 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Autosalg</title>
 
-<!-- Ikoner -->
-<link rel="apple-touch-icon" sizes="180x180" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-180.png">
-<link rel="apple-touch-icon-precomposed" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-180.png">
-<link rel="icon" type="image/png" sizes="192x192" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-512.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-favicon-32.png">
+<!-- Ikoner - byttes ut med riktig apps ikoner av scriptet nedenfor når noen
+     velger en app i menyen (kun kosmetisk, virker uansett ikke i selve
+     hjemskjerm-ikonet siden det er fastsatt når man legger til appen). -->
+<link id="iconApple" rel="apple-touch-icon" sizes="180x180" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-180.png">
+<link id="iconPng192" rel="icon" type="image/png" sizes="192x192" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-192.png">
+<link id="iconPng512" rel="icon" type="image/png" sizes="512x512" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-512.png">
+<link id="iconFav32" rel="icon" type="image/png" sizes="32x32" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-favicon-32.png">
 
 <!-- PWA & Hjemskjerm -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Autosalg">
+<meta id="metaAppleTitle" name="apple-mobile-web-app-title" content="Autosalg">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#D23A31">
 
@@ -67,37 +68,56 @@
     <img id="splashLogo" src="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-512.png" alt="">
   </div>
 
-  <!-- Ingen kamera-tilgang trengs her (menysiden bare lenker videre til de
-       tre app-ene, som hver håndterer sin egen kamera-tilgang), men iframen
-       beholdes for samme visuelle stil (splash-fade) som de andre appene. -->
+
   <iframe
     id="appFrame"
-    src="https://script.google.com/macros/s/AKfycbxJS6SVVcBNPut5ajAgienFw7VU702AOoLxhXkb3EAYJFHeTmfP1K7PCkj2NxH-OvRt9w/exec">
+    src="https://script.google.com/macros/s/AKfycbxJS6SVVcBNPut5ajAgienFw7VU702AOoLxhXkb3EAYJFHeTmfP1K7PCkj2NxH-OvRt9w/exec"
+    allow="camera; microphone; screen-wake-lock">
   </iframe>
 
   <script>
-    // Menysiden (Apps Script) kjører i en sandkasse-iframe som ikke
-    // nødvendigvis får lov til å bytte hele fanens URL selv. Når noen
-    // velger en app der, sender den en postMessage opp hit i stedet - vi
-    // (den ekte toppsiden i fanen) gjør selve navigeringen.
-    //
-    // Vi navigerer IKKE direkte til app-ens ekte exec-URL lenger (det
-    // knakk fullskjerm-/hjemskjerm-visningen, siden den hoppet til et
-    // helt annet opphav - script.google.com - og det gjorde URL-en synlig
-    // og bokmerkbar for alltid). I stedet lagrer vi den midlertidig i
-    // sessionStorage (kun i denne fanen, aldri skrevet til noen fil) og
-    // sender brukeren videre til app/-siden på SAMME opphav som denne
-    // siden. Den siden har ingen URL bakt inn i seg i det hele tatt - den
-    // henter kun det som eventuelt ligger og venter i sessionStorage, og
-    // fjerner det med det samme. Se kommentaren i app/index.html.
+
+    var APP_META = {
+      verksted: {
+        title: 'Saksbilder',
+        icon180: 'https://dsautosalg.github.io/autosalg-ikoner/verksted/verksted-icon-180.png',
+        icon192: 'https://dsautosalg.github.io/autosalg-ikoner/verksted/verksted-icon-192.png',
+        icon512: 'https://dsautosalg.github.io/autosalg-ikoner/verksted/verksted-icon-512.png',
+        favicon32: 'https://dsautosalg.github.io/autosalg-ikoner/verksted/verksted-favicon-32.png'
+      },
+      kundemottak: {
+        title: 'Skadebilder',
+        icon180: 'https://dsautosalg.github.io/autosalg-ikoner/kundemottak/kundemottak-icon-180.png',
+        icon192: 'https://dsautosalg.github.io/autosalg-ikoner/kundemottak/kundemottak-icon-192.png',
+        icon512: 'https://dsautosalg.github.io/autosalg-ikoner/kundemottak/kundemottak-icon-512.png',
+        favicon32: 'https://dsautosalg.github.io/autosalg-ikoner/kundemottak/kundemottak-favicon-32.png'
+      },
+      karosseri: {
+        title: 'Karosseri',
+        icon180: 'https://dsautosalg.github.io/autosalg-ikoner/karosseri/karosseri-icon-180.png',
+        icon192: 'https://dsautosalg.github.io/autosalg-ikoner/karosseri/karosseri-icon-192.png',
+        icon512: 'https://dsautosalg.github.io/autosalg-ikoner/karosseri/karosseri-icon-512.png',
+        favicon32: 'https://dsautosalg.github.io/autosalg-ikoner/karosseri/karosseri-favicon-32.png'
+      }
+    };
+
     window.addEventListener('message', function(ev){
       if (!ev.data || ev.data.type !== 'autosalg-nav' || typeof ev.data.url !== 'string') return;
       if (ev.origin.indexOf('google') === -1) return;
-      try {
-        sessionStorage.setItem('autosalg_pending_url', ev.data.url);
-        sessionStorage.setItem('autosalg_pending_key', ev.data.key || '');
-      } catch (e) { /* privat modus e.l. - naviger uansett, bare uten ikon/tittel-tilpasning */ }
-      window.location.href = 'https://dsautosalg.github.io/autosalg-ikoner/app/';
+
+      // Bytt kun src på den EKSISTERENDE iframen - ingen window.location
+      // noe sted, det er poenget.
+      document.getElementById('appFrame').src = ev.data.url;
+
+      var meta = APP_META[ev.data.key];
+      if (meta) {
+        document.title = meta.title;
+        document.getElementById('metaAppleTitle').setAttribute('content', meta.title);
+        document.getElementById('iconApple').href = meta.icon180;
+        document.getElementById('iconPng192').href = meta.icon192;
+        document.getElementById('iconPng512').href = meta.icon512;
+        document.getElementById('iconFav32').href = meta.favicon32;
+      }
     });
   </script>
 
