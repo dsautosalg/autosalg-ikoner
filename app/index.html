@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Autosalg</title>
+
+<!-- Ikoner - byttes ut med riktig apps ikoner av skriptet nedenfor når siden
+     vet hvilken app som skal vises (se APP_META). Disse er bare en fallback
+     helt til det skjer. -->
+<link id="iconApple" rel="apple-touch-icon" sizes="180x180" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-180.png">
+<link id="iconPng192" rel="icon" type="image/png" sizes="192x192" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-192.png">
+<link id="iconPng512" rel="icon" type="image/png" sizes="512x512" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-512.png">
+<link id="iconFav32" rel="icon" type="image/png" sizes="32x32" href="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-favicon-32.png">
+
+<!-- PWA & Hjemskjerm -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta id="metaAppleTitle" name="apple-mobile-web-app-title" content="Autosalg">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#D23A31">
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #0c0c0d;
+  }
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: none;
+  }
+
+  #splash {
+    position: fixed;
+    inset: 0;
+    background: #0c0c0d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  #splash img {
+    width: 96px;
+    height: 96px;
+    border-radius: 22px;
+  }
+  #splash.fadeOut {
+    animation: splashFadeOut 0.35s ease forwards;
+  }
+  @keyframes splashFadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; pointer-events: none; }
+  }
+
+  #noApp {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px;
+    color: #9a9a9c;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  #noApp a {
+    color: #D23A31;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+  <div id="splash">
+    <img id="splashLogo" src="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-512.png" alt="">
+  </div>
+
+  <div id="noApp">
+    <div>
+      <p>Denne siden må åpnes via Autosalg-menyen - den kan ikke besøkes direkte.</p>
+      <a href="https://dsautosalg.github.io/autosalg-ikoner/splash/">Gå til menyen</a>
+    </div>
+  </div>
+
+  <iframe
+    id="appFrame"
+    allow="camera; microphone; screen-wake-lock">
+  </iframe>
+
+  <script>
+    var APP_META = {
+      verksted: {
+        title: 'Saksbilder',
+        icon180: 'https://dsautosalg.github.io/autosalg-ikoner/verksted/verksted-icon-180.png',
+        icon192: 'https://dsautosalg.github.io/autosalg-ikoner/verksted/verksted-icon-192.png',
+        icon512: 'https://dsautosalg.github.io/autosalg-ikoner/verksted/verksted-icon-512.png',
+        favicon32: 'https://dsautosalg.github.io/autosalg-ikoner/verksted/verksted-favicon-32.png'
+      },
+      kundemottak: {
+        title: 'Skadebilder',
+        icon180: 'https://dsautosalg.github.io/autosalg-ikoner/kundemottak/kundemottak-icon-180.png',
+        icon192: 'https://dsautosalg.github.io/autosalg-ikoner/kundemottak/kundemottak-icon-192.png',
+        icon512: 'https://dsautosalg.github.io/autosalg-ikoner/kundemottak/kundemottak-icon-512.png',
+        favicon32: 'https://dsautosalg.github.io/autosalg-ikoner/kundemottak/kundemottak-favicon-32.png'
+      },
+      karosseri: {
+        title: 'Karosseri',
+        icon180: 'https://dsautosalg.github.io/autosalg-ikoner/karosseri/karosseri-icon-180.png',
+        icon192: 'https://dsautosalg.github.io/autosalg-ikoner/karosseri/karosseri-icon-192.png',
+        icon512: 'https://dsautosalg.github.io/autosalg-ikoner/karosseri/karosseri-icon-512.png',
+        favicon32: 'https://dsautosalg.github.io/autosalg-ikoner/karosseri/karosseri-favicon-32.png'
+      }
+    };
+
+    var url = null, key = null;
+    try {
+      url = sessionStorage.getItem('autosalg_pending_url');
+      key = sessionStorage.getItem('autosalg_pending_key');
+      sessionStorage.removeItem('autosalg_pending_url');
+      sessionStorage.removeItem('autosalg_pending_key');
+    } catch (e) { /* privat modus e.l. - behandles som "ingen ventende URL" under */ }
+
+    var splash = document.getElementById('splash');
+    var noApp = document.getElementById('noApp');
+    var frame = document.getElementById('appFrame');
+
+    if (url) {
+      var meta = APP_META[key];
+      if (meta) {
+        document.title = meta.title;
+        document.getElementById('metaAppleTitle').setAttribute('content', meta.title);
+        document.getElementById('iconApple').href = meta.icon180;
+        document.getElementById('iconPng192').href = meta.icon192;
+        document.getElementById('iconPng512').href = meta.icon512;
+        document.getElementById('iconFav32').href = meta.favicon32;
+        document.getElementById('splashLogo').src = meta.icon512;
+      }
+      frame.src = url;
+      frame.style.display = 'block';
+      setTimeout(function(){ splash.classList.add('fadeOut'); }, 450);
+    } else {
+      // Noen kom hit uten å ha gått via kodesiden først (eller
+      // sessionStorage var tom av andre grunner, f.eks. etter en
+      // reload) - vis ingenting av det som faktisk skal beskyttes.
+      splash.style.display = 'none';
+      noApp.style.display = 'flex';
+    }
+  </script>
+
+</body>
+</html>
