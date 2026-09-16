@@ -68,7 +68,6 @@
     <img id="splashLogo" src="https://dsautosalg.github.io/autosalg-ikoner/splash/splash-icon-512.png" alt="">
   </div>
 
-
   <iframe
     id="appFrame"
     src="https://script.google.com/macros/s/AKfycbxJS6SVVcBNPut5ajAgienFw7VU702AOoLxhXkb3EAYJFHeTmfP1K7PCkj2NxH-OvRt9w/exec"
@@ -105,9 +104,13 @@
       if (!ev.data || ev.data.type !== 'autosalg-nav' || typeof ev.data.url !== 'string') return;
       if (ev.origin.indexOf('google') === -1) return;
 
-      // Bytt kun src på den EKSISTERENDE iframen - ingen window.location
-      // noe sted, det er poenget.
-      document.getElementById('appFrame').src = ev.data.url;
+
+      var appFrame = document.getElementById('appFrame');
+      try {
+        appFrame.contentWindow.location.replace(ev.data.url);
+      } catch (e) {
+        appFrame.src = ev.data.url; // reserveløsning hvis noe uventet skjer
+      }
 
       var meta = APP_META[ev.data.key];
       if (meta) {
