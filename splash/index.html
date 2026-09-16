@@ -69,13 +69,25 @@
 
   <!-- Ingen kamera-tilgang trengs her (menysiden bare lenker videre til de
        tre app-ene, som hver håndterer sin egen kamera-tilgang), men iframen
-       beholdes for samme visuelle stil (splash-fade) som de andre appene.
-       BYTT UT src NEDENFOR med web-app-URL-en du får når du deployer
-       Apps Script-menyprosjektet (se punkt 5-6 i Code.gs). -->
+       beholdes for samme visuelle stil (splash-fade) som de andre appene. -->
   <iframe
     id="appFrame"
-    src="SETT_INN_DEPLOYMENT_URL_HER">
+    src="https://script.google.com/macros/s/AKfycbzBhYxTzd_j7tL5vIpWS3OD5IvRfGcnCbkxsAOXL825D7mZoKyNbmupRQemI9hbRXjCOA/exec">
   </iframe>
+
+  <script>
+    // Menysiden (Apps Script) kjører i en sandkasse-iframe som ikke
+    // nødvendigvis får lov til å bytte hele fanens URL selv. Når noen
+    // velger en app der, sender den en postMessage opp hit i stedet - vi
+    // (den ekte toppsiden i fanen) gjør selve navigeringen. Dette er eneste
+    // sted den valgte app-ens ekte URL noensinne dukker opp i nettleseren,
+    // og bare etter at koden allerede er verifisert på serveren.
+    window.addEventListener('message', function(ev){
+      if (!ev.data || ev.data.type !== 'autosalg-nav' || typeof ev.data.url !== 'string') return;
+      if (ev.origin.indexOf('google') === -1) return;
+      window.location.href = ev.data.url;
+    });
+  </script>
 
 </body>
 </html>
