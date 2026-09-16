@@ -79,13 +79,25 @@
     // Menysiden (Apps Script) kjører i en sandkasse-iframe som ikke
     // nødvendigvis får lov til å bytte hele fanens URL selv. Når noen
     // velger en app der, sender den en postMessage opp hit i stedet - vi
-    // (den ekte toppsiden i fanen) gjør selve navigeringen. Dette er eneste
-    // sted den valgte app-ens ekte URL noensinne dukker opp i nettleseren,
-    // og bare etter at koden allerede er verifisert på serveren.
+    // (den ekte toppsiden i fanen) gjør selve navigeringen.
+    //
+    // Vi navigerer IKKE direkte til app-ens ekte exec-URL lenger (det
+    // knakk fullskjerm-/hjemskjerm-visningen, siden den hoppet til et
+    // helt annet opphav - script.google.com - og det gjorde URL-en synlig
+    // og bokmerkbar for alltid). I stedet lagrer vi den midlertidig i
+    // sessionStorage (kun i denne fanen, aldri skrevet til noen fil) og
+    // sender brukeren videre til app/-siden på SAMME opphav som denne
+    // siden. Den siden har ingen URL bakt inn i seg i det hele tatt - den
+    // henter kun det som eventuelt ligger og venter i sessionStorage, og
+    // fjerner det med det samme. Se kommentaren i app/index.html.
     window.addEventListener('message', function(ev){
       if (!ev.data || ev.data.type !== 'autosalg-nav' || typeof ev.data.url !== 'string') return;
       if (ev.origin.indexOf('google') === -1) return;
-      window.location.href = ev.data.url;
+      try {
+        sessionStorage.setItem('autosalg_pending_url', ev.data.url);
+        sessionStorage.setItem('autosalg_pending_key', ev.data.key || '');
+      } catch (e) { /* privat modus e.l. - naviger uansett, bare uten ikon/tittel-tilpasning */ }
+      window.location.href = 'https://dsautosalg.github.io/autosalg-ikoner/app/';
     });
   </script>
 
