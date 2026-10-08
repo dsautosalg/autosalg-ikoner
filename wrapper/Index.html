@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Leiekontrakt</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#1a4d8f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Leiekontrakt">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="leiekontrakt-favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="leiekontrakt-icon-180.png">
+<style>
+  html, body { margin:0; padding:0; width:100%; height:100%; background:#1a4d8f; overflow:hidden; }
+  iframe { position:fixed; inset:0; width:100vw; height:100vh; border:0; display:block; background:#1a4d8f; }
+</style>
+</head>
+<body>
+<iframe id="appFrame" allow="fullscreen; screen-wake-lock" title="Leiekontrakt"></iframe>
+<script>
+  // Lim inn webapp-URL-en til leiekontrakt-appen her (uten noen
+  // ?-parametre - de legges til automatisk under).
+  var APP_URL = 'https://script.google.com/a/macros/verksted.autosalg.no/s/AKfycby0wVNNXpzJylkXfS69yhDNlkfdYlpd6fAI4IoY7gEDyfx67NlKzST_HaJdY5LHZDs/exec';
+
+  // Denne wrapper-sidens egen, "rene" URL (uten ? eller #) - sendes med inn
+  // som ?home=... slik at appen kan navigere hit tilbake (i stedet for til
+  // den rå Apps Script-adressen) når noen trykker "Ny kontrakt" eller
+  // "Tilbake til start". Se homeUrl-håndteringen i doGet() i Code.gs.
+  var homeUrl = window.location.href.split('#')[0].split('?')[0];
+
+  var sep = APP_URL.indexOf('?') > -1 ? '&' : '?';
+  document.getElementById('appFrame').src =
+    APP_URL + sep + 'view=tablet&home=' + encodeURIComponent(homeUrl);
+</script>
+</body>
+</html>
