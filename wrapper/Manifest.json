@@ -1,0 +1,21 @@
+{
+  "name": "Leiekontrakt - Autosalg AS",
+  "short_name": "Leiekontrakt",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#1a4d8f",
+  "theme_color": "#1a4d8f",
+  "icons": [
+    {
+      "src": "leiekontrakt-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "leiekontrakt-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
